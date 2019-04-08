@@ -8,6 +8,11 @@
 #include "vec.h"
 #include "mat.h"
 
+struct alpha_data {
+    int dim;
+    double alpha;
+};
+
 // Takes in a basis B and a list of alpha values A
 // It LLL reduces the basis for each alpha value 
 // and it returns the smallest alpha value that produces the shortest vector
@@ -72,14 +77,43 @@ double expected_alpha(const char* filename, const std::vector<double>& A, int n)
     return exp_alpha;
 }
 
+//
+std::vector<alpha_data> expected_alpha_list(const std::vector<double>& A, int max_dimension) {
+    std::vector<alpha_data> alpha_list;
+    for (int i = 3; i <= max_dimension; i++) {
+        std::string file = "data/n" + std::to_string(i) + ".txt";
+        double temp_a = expected_alpha(file.c_str(), A, i);
+        alpha_list.push_back({i, temp_a});
+    }
+    return alpha_list;
+}
+
+//
+void write_alphas(const char* filename, const std::vector<alpha_data>& alpha_list) {
+    std::ofstream outfile(filename);
+    if (outfile.is_open()) {
+        outfile << "dim : alpha\n";
+        for (int i = 0; i < alpha_list.size(); i++) {
+            outfile << alpha_list[i].dim << " : " << alpha_list[i].alpha << "\n"; 
+        }
+        outfile.close();
+    } else {
+        std::cout << "Unable to open file: " << filename << std::endl;
+    }
+}
+
 // MAIN FUNCTION
 int main() {
     std::cout << "computing..." << std::endl;
 
     std::vector<double> A = {0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95};
-    std::cout << "expected alpha: " << expected_alpha("data/n3.txt", A, 3) << std::endl;
+    std::vector<alpha_data> exp_alphas = expected_alpha_list(A, 5);
+    write_alphas("expected_alphas.txt", exp_alphas);
     
     std::cout << "done." << std::endl;
+
+    //std::cout << "expected alpha: " << expected_alpha("data/n3.txt", A, 3) << std::endl;
+    
     /*
     basis<double> base(4);
     vec<double> v1({-2,7,7,-5});
@@ -108,6 +142,7 @@ int main() {
     for (int i = 0; i < 4; i++) {
         std::cout << bp2[i] << std::endl;
     }
+    
     std::cout << bp2.shortest().magnitude() << std::endl;
     */
 
