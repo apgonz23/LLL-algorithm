@@ -1,7 +1,7 @@
 # Functions for producing testing data
 # Generates the specified number of basis for each dimension 
-# starting at the (3x3) all the way to (max_dim x max_dim)
-# usage: ./generate_basis.py -d max_dim num_of_basis
+# starting at the (min_dim x min_dim) all the way to (max_dim x max_dim)
+# usage: ./generate_basis.py -d min_dim max_dim num_of_basis
 
 import sys
 import numpy as np
@@ -23,17 +23,18 @@ def generate_matrices(n, k):
                 f.write('\n')
 
 # creates a file with multiple basis from (3x3) to (max_dim x max_dim)
-def create_basis_files(max_dim, k):
-    for i in range(3, max_dim+1):
+def create_basis_files(min_dim, max_dim, k):
+    for i in range(min_dim, max_dim+1):
         generate_matrices(i, k)
 
 # checks to ensure call is correct
-if (len(sys.argv) == 4 and sys.argv[1] == '-d'):
-    max_dim = int(sys.argv[2])
-    num_of_basis = int(sys.argv[3])
+if (len(sys.argv) == 5 and sys.argv[1] == '-d'):
     print('writing to files...')
-    create_basis_files(max_dim, num_of_basis)
+    min_dim = int(sys.argv[2])
+    max_dim = int(sys.argv[3])
+    num_of_basis = int(sys.argv[4])
+    create_basis_files(min_dim, max_dim, num_of_basis)
     print('done')
 else:
-    print('usage: ./generate_basis.py -d [max_dim] [num_of_basis]')
+    print('usage: ./generate_basis.py -d [min_dim] [max_dim] [num_of_basis]')
 

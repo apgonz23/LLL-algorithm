@@ -77,15 +77,13 @@ double expected_alpha(const char* filename, const std::vector<double>& A, int n)
     return exp_alpha;
 }
 
-//
-std::vector<alpha_data> expected_alpha_list(const std::vector<double>& A, int max_dimension) {
-    std::vector<alpha_data> alpha_list;
-    for (int i = 3; i <= max_dimension; i++) {
+// Reads from files data/n[dim].txt
+void expected_alpha_list(std::vector<alpha_data>& a_list, const std::vector<double>& A, int min_dim, int max_dim) {
+    for (int i = min_dim; i <= max_dim; i++) {
         std::string file = "data/n" + std::to_string(i) + ".txt";
         double temp_a = expected_alpha(file.c_str(), A, i);
-        alpha_list.push_back({i, temp_a});
+        a_list.push_back({i, temp_a});
     }
-    return alpha_list;
 }
 
 //
@@ -103,14 +101,25 @@ void write_alphas(const char* filename, const std::vector<alpha_data>& alpha_lis
 }
 
 // MAIN FUNCTION
-int main() {
-    std::cout << "computing..." << std::endl;
+int main(int argc, char** argv) {
+    
+    if (argc != 5 || argv[1] != "-d") {
+        std::cout << "usage: ./LLL -d [output_file] [min_dim] [max_dim]" << std::endl;
+        return 0;
+    }
+    std::string filename = argv[2];
+    int min_dim = std::stoi(argv[3], nullptr, 10); 
+    int max_dim = std::stoi(argv[4], nullptr, 10);
 
     std::vector<double> A = {0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95};
-    std::vector<alpha_data> exp_alphas = expected_alpha_list(A, 5);
-    write_alphas("expected_alphas.txt", exp_alphas);
+    std::cout << "computing..." << std::endl; 
+    std::vector<alpha_data> exp_alphas;
+    expected_alpha_list(exp_alphas, A, min_dim, max_dim);
+    write_alphas(filename.c_str(), exp_alphas);
     
     std::cout << "done." << std::endl;
+
+    return 0;
 
     //std::cout << "expected alpha: " << expected_alpha("data/n3.txt", A, 3) << std::endl;
     
@@ -145,7 +154,5 @@ int main() {
     
     std::cout << bp2.shortest().magnitude() << std::endl;
     */
-
-    return 0;
 }
 
