@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <limits>
+#include <cstring>
 #include "lattice.h"
 #include "vec.h"
 #include "mat.h"
@@ -103,7 +104,7 @@ void write_alphas(const char* filename, const std::vector<alpha_data>& alpha_lis
 // MAIN FUNCTION
 int main(int argc, char** argv) {
     
-    if (argc != 5 || argv[1] != "-d") {
+    if (argc != 5 || strcmp(argv[1],"-d")) {
         std::cout << "usage: ./LLL -d [output_file] [min_dim] [max_dim]" << std::endl;
         return 0;
     }
