@@ -156,4 +156,7 @@ std::ostream& operator << (std::ostream& out, const vec<T>& u) {
     return out;
 }
 
+//
+typedef vec<double> vec_d; 
+
 #endif

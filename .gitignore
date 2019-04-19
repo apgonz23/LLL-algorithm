@@ -6,3 +6,4 @@ Makefile
 *.o
 *.a
 LLL
+test

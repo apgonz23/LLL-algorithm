@@ -61,4 +61,7 @@ std::ostream& operator << (std::ostream& out, const mat<T>& A) {
     }
 }
 
+//
+typedef mat<double> mat_d;
+
 #endif

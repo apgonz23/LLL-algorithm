@@ -1,77 +1,21 @@
-// Lattice
-#ifndef __lattice_h__
-#define __lattice_h__
-
-#include <cassert>
-#include <iostream>
+// LLL algorithm
+#include "LLL.h"
 #include "vec.h"
 #include "mat.h"
-
-template<class T>
-struct basis {
-    std::vector< vec<T> > B;
-    int dim;
-    
-    basis() {
-        dim = 0;
-    }
-
-    basis(int n) {
-        dim = n;
-        B.resize(n);
-        for (int i = 0; i < n; i++) {
-            B[i] = vec<T>(n);
-        }
-    }
-
-    
-    basis(std::vector< vec<T> > in) {
-        B = in;
-        dim = B.size();
-    }
-   
-    const vec<T>& operator [] (int i) const {
-        return B[i];
-    }
-
-    vec<T>& operator [] (int i) {
-        return B[i];
-    }
-
-    // prints basis to standard output
-    void display() {
-        for (int i = 0; i < dim; i++) {
-            std::cout << B[i] << std::endl;
-        }
-    }
-
-    // returns the vector with the smallest magnitude in the basis
-    vec<T> shortest() {
-        vec<T> s = B[0];
-        T mag = s.magnitude();
-        for (int i = 1; i < dim; i++) {
-            if (B[i].magnitude() < mag) {
-                mag = B[i].magnitude();
-                s = B[i];
-            }
-        }
-        return s;
-    }
-};
+#include <iostream>
+#include <cassert>
 
 // LLL algorithm
-// Meant to be used with double or float
-template<class T>
-basis<T> LLL(const basis<T>& in_B, T alpha) {
-    int n = in_B.dim;
-    basis<T> B(n);
+basis_d LLL(const basis_d& input_basis, double alpha) {
+    int n = input_basis.size();
+    basis_d B(n);
     for (int i = 0; i < n; i++) {
-        B[i] = in_B[i];
+        B[i] = input_basis[i];
     }
 
-    basis<T> Bstar(n);
-    mat<T> mu(n);
-    T gamma[n];
+    basis_d Bstar(n);
+    mat_d mu(n);
+    double gamma[n];
     for (int i = 0; i < n; i++) {
         Bstar[i] = B[i];
         for (int j = 0; j < i; j++) {
@@ -82,7 +26,6 @@ basis<T> LLL(const basis<T>& in_B, T alpha) {
     }
     int k = 1;
     while (k < n) {
-        // reduce(k, k-1)
         if (std::abs(mu(k,k-1)) > 0.5) {
             B[k] = B[k] - std::round(mu(k,k-1)) * B[k-1];
             for (int j = 0; j < k-1; j++) mu(k,j) -= std::round(mu(k,k-1)) * mu(k-1,j);
@@ -101,14 +44,14 @@ basis<T> LLL(const basis<T>& in_B, T alpha) {
         } else {
             // exchange 
             std::swap(B[k], B[k-1]);
-            T prev_mu = mu(k,k-1);
-            T delta = gamma[k] + prev_mu * prev_mu * gamma[k-1];
+            double prev_mu = mu(k,k-1);
+            double delta = gamma[k] + prev_mu * prev_mu * gamma[k-1];
             mu(k,k-1) = prev_mu * gamma[k-1] / delta;
             gamma[k] = gamma[k] * gamma[k-1] / delta;
             gamma[k-1] = delta;
             for (int j = 0; j < k-1; j++) std::swap(mu(k,j), mu(k-1,j));
             for (int i = k+1; i < n; i++) {
-                T temp_mu = mu(i,k);
+                double temp_mu = mu(i,k);
                 mu(i,k) = mu(i,k-1) - prev_mu * mu(i,k);
                 mu(i,k-1) = mu(k,k-1) * mu(i,k) + temp_mu;
             }
@@ -119,17 +62,15 @@ basis<T> LLL(const basis<T>& in_B, T alpha) {
     return B;
 }
 
-// MU function
-template<class T>
-T mu(const vec<T>& u, const vec<T>& v) {
+// Gram-Schmidt MU function
+double mu(const vec_d& u, const vec_d& v) {
     return dot(u,v) / v.magnitude_squared();
 }
 
 // Orthogonalizes basis using Gram-Schmidt method
-template<class T>
-basis<T> gram_schmidt(basis<T> B) {
-    int n = B.dim;
-    basis<T> Bstar(n);
+basis_d gram_schidt(const basis_d& B) {
+    int n = B.size();
+    basis_d Bstar(n);
     for (int k = 0; k < n; k++) Bstar[k] = B[k];
     for (int i = 1; i < n; i++) {
         for (int j = 0; j < i; j++) {
@@ -139,4 +80,25 @@ basis<T> gram_schmidt(basis<T> B) {
     return Bstar;
 }
 
-#endif
+// finds the vector with the smallest magnitude in the basis
+vec_d shortest_vector(const basis_d& B) {
+    int n = B.size();
+    vec_d s = B[0];
+    double mag = s.magnitude();
+    for (int i = 1; i < n; i++) {
+        if (B[i].magnitude() < mag) {
+            mag = B[i].magnitude();
+            s = B[i];
+        }
+    }
+    return s;
+}
+
+// Prints a basis to standard output
+void display_basis(const basis_d& B) {
+    int n = B.size();
+    for (int i = 0; i < n; i++) {
+        std::cout << B[i] << std::endl;
+    }
+}
+
