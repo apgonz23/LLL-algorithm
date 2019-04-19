@@ -4,8 +4,8 @@ The LLL algorithm is used for lattice basis reduction and has many practical app
 The algorithm is implemented in the LLL header and cpp files. There is a python script for generating new bases in the data folder.
 
 EX:
-    ./generate_basis.py -d 3 12 1000
-    ./LLL.exe "expected_alphas.txt" 3 12
+ - ./generate_basis.py -d 3 12 1000
+ - ./LLL.exe "expected_alphas.txt" 3 12
 
 The above commands create 10 files with 1000 bases each (one for 3x3 bases, 4x4 bases, ... , 12x12 bases).
 
