@@ -16,7 +16,7 @@ infile = sys.argv[1]
 with open(infile) as f:
     for line in f:
         tokens = line.strip().split()
-        if (tokens[0] != 'dim'):
+        if (tokens[0] != 'dim' and line[0] != '#'):
             dimensions.append(int(tokens[0]))
             alphas.append(float(tokens[2]))
 
@@ -25,4 +25,5 @@ plt.xlabel('Dimension')
 plt.ylabel('Expected alpha value')
 plt.title('Optimal alpha value by dimension')
 
+plt.savefig('alpha_graph.png', bbox_inches='tight')
 plt.show()
