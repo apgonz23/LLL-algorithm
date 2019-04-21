@@ -25,7 +25,7 @@ std::vector<alphaData> create_expected_alpha_list(const std::vector<double>& A, 
 void save_alphas(const char* filename, const std::vector<alphaData>& alpha_list);
 
 
-//////////////////////
+/////////////////////
 /// MAIN FUNCTION ///
 /////////////////////
 int main(int argc, char** argv) {
@@ -136,9 +136,13 @@ double calc_expected_alpha(const char* filename, const std::vector<double>& A, i
 std::vector<alphaData> create_expected_alpha_list(const std::vector<double>& A, int min_dim, int max_dim) {
     std::vector<alphaData> output_list;
     for (int i = min_dim; i <= max_dim; i++) {
+        std::cout << "calculating " << i << " x " << i << " ... ";
+        
         std::string file = "data/n" + std::to_string(i) + ".txt";
         double temp_alpha = calc_expected_alpha(file.c_str(), A, i);
         output_list.push_back({i, temp_alpha});
+        
+        std::cout << "finished" << std::endl;
     }
     return output_list;
 }
@@ -148,10 +152,12 @@ std::vector<alphaData> create_expected_alpha_list(const std::vector<double>& A, 
 void save_alphas(const char* filename, const std::vector<alphaData>& alpha_list) {
     std::ofstream outfile(filename);
     if (outfile.is_open()) {
+        std::cout << "saving to disk ... ";
         outfile << "dim\t:\talpha\n";
         for (int i = 0; i < alpha_list.size(); i++) 
             outfile << alpha_list[i].dimension << "\t:\t" << alpha_list[i].alpha << "\n"; 
         outfile.close();
+        std::cout << "finished" << std::endl;
     } else {
         std::cout << "Unable to open file: " << filename << std::endl;
     }

@@ -1,6 +1,7 @@
 # Expected alphas from 3x3 to 100x100 bases
 # Calulated using 1000 single digit integer matrices
 # Using the test alpha values from 0.35 to 0.95 in 0.05 step increments
+
 dim	:	alpha
 3	:	0.354304
 4	:	0.358308

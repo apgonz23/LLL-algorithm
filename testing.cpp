@@ -2,8 +2,6 @@
 // Test the LLL algorithm using this file
 // Create a new basis and add in any vector values 
 // and compare the results to whats expected
- 
-
 #include "LLL.h"
 #include <iostream>
 
