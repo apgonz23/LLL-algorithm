@@ -12,13 +12,10 @@ import numpy as np
 def generate_matrices(n, k, check_determinant=True):
     with open('data/n'+str(n)+'.txt', 'w') as f:
         for i in range(k):
-            if (check_determinant):
-                det = 0
-                while (det == 0):
-                    M = np.random.randint(-9, 9, size=(n,n))
-                    det = np.linalg.det(M)
-            else:
-                M = np.random.randint(-9, 9, size=(n,n))
+            det = 0
+            while (det == 0):
+                M = np.random.randint(-100, 100, size=(n,n))
+                det = np.linalg.det(M)
 
             f.write('b\n')
             for j in range(n):
